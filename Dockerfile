@@ -3,12 +3,12 @@ MAINTAINER roy.wang wangkangluo1@gmail.com
 
 RUN apt-get -y update
 COPY ./node-v6.9.2-linux-x64.tar.gz /opt/node-v6.9.2-linux-x64.tar.gz
-COPY ./phantomjs-2.1.1-linux-x86_64.tar /opt/phantomjs-2.1.1-linux-x86_64.tar
+COPY ./phantomjs-2.1.1-linux-x86_64.tar.bz2 /opt/phantomjs-2.1.1-linux-x86_64.tar.bz2
 COPY ./startup.sh /root/startup.sh
 
 RUN set -xe \
     &&  rm /bin/sh && ln -s /bin/bash /bin/sh \
-    &&  apt-get install -y libfontconfig python  openssh-server  
+    &&  apt-get install -y libfontconfig python  openssh-server bzip2
 
 RUN set -xe \
     && cd /opt \
@@ -18,6 +18,7 @@ RUN set -xe \
 
 RUN set -xe \
     && cd /opt \
+    && bzip2 -d phantomjs-2.1.1-linux-x86_64.tar.bz2 \
     && tar -xvf phantomjs-2.1.1-linux-x86_64.tar \
     && echo  'export PATH="/opt/phantomjs-2.1.1-linux-x86_64/bin:$PATH"' >> /etc/profile
 
