@@ -8,7 +8,7 @@ COPY ./startup.sh /root/startup.sh
 
 RUN set -xe \
     &&  rm /bin/sh && ln -s /bin/bash /bin/sh \
-    &&  apt-get install -y libfontconfig python 
+    &&  apt-get install -y libfontconfig python  openssh-server  
 
 RUN set -xe \
     && cd /opt \
@@ -24,6 +24,16 @@ RUN set -xe \
 RUN set -xe \
     && source /etc/profile \
     && npm install casperjs -g \
-    && chmod +x /root/startup.sh
+    && chmod +x /root/startup.sh \
+    && useradd -m -s /bin/bash ops \
+    && echo "ops:123456" | chpasswd
+
+RUN set -xe \
+    && echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee /etc/apt/sources.list.d/webupd8team-java.list \
+    && echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | tee -a /etc/apt/sources.list.d/webupd8team-java.list \
+    && echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections \
+    && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886 \
+    && apt-get update \
+    && apt-get install -y oracle-java8-installer
 
 CMD ["/root/startup.sh"] 
